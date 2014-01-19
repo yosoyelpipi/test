@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Media</title>
+<script src="phonegap-1.1.0.js"></script>
+<link rel="stylesheet" href="estilo.css"/>
+
+</head>
+
+<body>
+<div class="contenedor">
+    <audio preload="auto" autobuffer controls id="audio">
+        
+        <source src="test.mp3"/>
+        
+    </audio>
+    <div class="audiocontrols">
+    <h3>Audio by Pipi</h3>
+        <div class="reproduccion">
+            <a href="#" class="play"><i class="icon-play"></i></a>
+            <a href="#" class="pause"><i class="icon-pause"></i></a>
+            <a href="#" class="stop"><i class="icon-stop"></i></a>
+        </div>
+        <div class="volume">
+            <a href="#" class="down"><i class="icon-volume-down"></i></a>
+            <div class="slider"><span class="knob"></span></div>
+            <a href="#" class="up"><i class="icon-volume-up"></i></a>
+        </div>
+    </div>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+ 
+<script type="text/javascript">
+(function($){
+    var audio = document.getElementById('audio');
+    $('.audiocontrols a.play').on('click',function(e){
+        e.preventDefault();
+        audio.play();
+    });
+    $('.audiocontrols a.pause').on('click',function(e){
+        e.preventDefault();
+        audio.pause();
+    });
+    $('.audiocontrols a.stop').on('click',function(e){
+        e.preventDefault();
+        audio.pause();
+        audio.currentTime=0;
+    });
+ 
+//------------  Fin controles de audio ------------ //
+ 
+//------------ Controlar el Volumen --------------- //
+ 
+    $('.down').on('click',function(e){
+        e.preventDefault();
+        audio.volume=Math.max(audio.volume-0.1,0);
+    });
+    $('.up').on('click',function(e){
+        e.preventDefault();
+        audio.volume=Math.min(audio.volume+0.1,1);
+    });
+ 
+    $(".knob").draggable({
+        containment:"parent",
+        drag:function(evt,ui){
+            var newVol = Math.round(ui.position.left / $(this).parent().width()*10) / 10;
+            audio.volume=newVol;
+        }
+        });
+ 
+    $('.slider').on('click',function(e){
+        if(!$(e.target).hasClass('slider'))return;
+        var newVol = Math.round(e.offsetX/ $(this).width()*10) / 10;
+        audio.volume=newVol;   
+    });
+ 
+    $(audio).on('volumechange',function(){
+        $('.knob').css('left',Math.min(audio.volume*$('.knob').parent().width(),$('.knob').parent().width()-$('.knob').width())+'px');
+        localStorage.setItem('volume',audio.volume);
+    });
+ 
+    audio.volume=(localStorage.getItem('volume')||1);
+ 
+    $(audio).trigger('volumechange');
+ 
+})(jQuery);
+ 
+</script>
+
+	
+</div>
+
+</body>
+</html>
